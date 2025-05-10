@@ -28,5 +28,6 @@ namespace Service.Abstracts
 
         public Task<IAsyncResult> SendPasswordResetLinkAsync(UserForgotPasswordDto userDto);
         public Task<IAsyncResult> ResetUserPasswordAsync(UserResetPasswordDto userDto, Guid userId, string token);
+        public Task<IAsyncResult> MatchUsersAsync(Guid userId, Guid matchUserId);
     }
 }

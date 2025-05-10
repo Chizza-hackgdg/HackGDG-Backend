@@ -1,6 +1,10 @@
 ﻿
 using AutoMapper;
 using Dto.AutoMapper.ApplicationUsers;
+using Dto.AutoMapper.ForumCategories;
+using Dto.AutoMapper.ForumComments;
+using Dto.AutoMapper.ForumPosts;
+using Dto.AutoMapper.Milestones;
 using Dto.AutoMapper.Roles;
 using Dto.ValidationRules;
 using Entity;
@@ -42,13 +46,20 @@ namespace AspNetCoreIdentityApp.Web.Extensions
         public static void AddServicesWithExtensions(this IServiceCollection services)
         {
             services.AddAutoMapper(
-        typeof(Program),
-        typeof(UserProfile),
-        typeof(RoleProfile)
-        );
+       typeof(Program),
+       typeof(ForumPostProfile),
+       typeof(ForumCategoryProfile),
+       typeof(ForumCommentProfile),
+       typeof(MilestoneProfile),
+       typeof(UserProfile),
+       typeof(RoleProfile)
+       );
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IForumCategoryService, ForumCategoryService>();
+            services.AddHttpClient<IGeminiService, GeminiService>();
+            services.AddScoped<IGeminiService, GeminiService>();
             services.AddScoped(typeof(ITBaseService<,>), typeof(TBaseService<,>));
 
         }

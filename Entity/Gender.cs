@@ -9,6 +9,6 @@ namespace Entity
     public enum Gender : byte
     {
         Erkek = 1,
-        Kadın = 2
+        Kadın
     }
 }

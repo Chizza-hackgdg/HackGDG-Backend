@@ -4,223 +4,130 @@ using Dto.ApplicationUsers;
 using Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Service.Abstracts;
 using System.Collections.Generic;
 
 namespace WebAPI.Controllers
 {
-    public class UserController : Controller
+    [ApiController]
+    [Route("api/user")]
+    public class UserController : ControllerBase
     {
-
         private readonly IUserService _userService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+
         public UserController(IUserService userService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userService = userService;
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        public async Task<IActionResult> Index()
-        {
-            var currentUser = await _userService.GetCurrentUserAsync().Result.Data;
-            if (currentUser == null)
-            {
-                return RedirectToAction(nameof(HomeController.Index));
-            }
-            var userViewModel = new ApplicationUser
-            {
-                Email = currentUser!.Email,
-                UserName = currentUser!.UserName,
-                PhoneNumber = currentUser!.PhoneNumber,
-            };
-            return View(userViewModel);
-        }
 
-        public IActionResult SignIn()
+        [HttpPost("signin")]
+        public async Task<IActionResult> SignIn([FromBody] LoginUserDto request)
         {
-            return View();
-        }
-
-        public IActionResult SignUp()
-        {
-            return View();
-        }
-
-        public IActionResult ChangePassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SignIn(LoginUserDto request, string? returnUrl)
-        {
-            var hasUser = await _userManager.FindByEmailAsync(request.Email);
             if (!ModelState.IsValid)
             {
-                return View();
+                return BadRequest(ModelState);
             }
-
-            returnUrl ??= Url.Action("Index", "Home");
 
             var result = await _userService.LoginAsync(request);
             if (await result.Success)
             {
-                return Redirect(returnUrl!);
+                return Ok("User signed in successfully.");
             }
 
-            if ( result.Message != null )
-            {
-                if (await result.Message == "LockedOut")
-                {
-                    ModelState.AddModelError(string.Empty, "User is locked out.");
-                    return View();
-                }
-                
-            }
-            ModelState.AddModelErrorList(new List<string>() { $"Email veya şifre yanlış. Kalan giriş hakkı: {3 - await _userManager.GetAccessFailedCountAsync(hasUser!)}" });
-            return View();
+            return BadRequest(await result.Message);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SignUp(RegisterUserDto request)
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUp([FromBody] RegisterUserDto request)
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return BadRequest(ModelState);
             }
-            var result = await _userService.RegisterAsync(request);
 
+            var result = await _userService.RegisterAsync(request);
             if (await result.Success)
             {
-                TempData["SuccessMessage"] = "Üyelik kaydınız başarıyla gerçekleşmiştir!";
-                return RedirectToAction(nameof(UserController.SignUp));
+                return Ok("User registered successfully.");
             }
-            ModelState.AddModelErrorList(await result.Messages);
-            return View();
+
+            return BadRequest(await result.Messages);
         }
 
-
-        public async Task<IActionResult> SignOut(string email)
+        [HttpPost("signout")]
+        public async Task<IActionResult> SignOut()
         {
             await _userService.LogOutAsync();
-            return RedirectToAction("Index", "Home");
+            return Ok("User signed out successfully.");
         }
-        [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangeUserPasswordDto request)
+
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangeUserPasswordDto request)
         {
             var result = await _userService.ChangePasswordAsync(request);
             if (await result.Success)
             {
-                TempData["SuccessMessage"] = "Şifreniz başarıyla değiştirilmiştir.";
-                return RedirectToAction(nameof(UserController.ChangePassword));
+                return Ok("Password changed successfully.");
             }
-            ModelState.AddModelErrorList(await result.Messages);
 
-            return View();
+            return BadRequest(await result.Messages);
         }
 
-        public async Task<IActionResult> EditUser()
-        {
-            ViewBag.genderList = new SelectList(Enum.GetNames(typeof(Gender)));
-
-            var currentUser = await _userService.GetCurrentUserAsync().Result.Data;
-
-            var userEditViewModel = new EditUserDto()
-            {
-                UserName = currentUser!.UserName!,
-                Email = currentUser.Email!,
-                PhoneNumber = currentUser.PhoneNumber!,
-                BirthDate = currentUser!.BirthDate,
-                Gender = currentUser.Gender
-            };
-
-            return View(userEditViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EditUser(EditUserDto request)
+        [HttpPost("edituser")]
+        public async Task<IActionResult> EditUser([FromBody] EditUserDto request)
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return BadRequest(ModelState);
             }
+
             var result = await _userService.EditUserInformationAsync(request);
             if (await result.Success)
             {
-                TempData["SuccessMessage"] = "Kullanıcı bilgileriniz başarıyla güncellenmiştir.";
-                return RedirectToAction(nameof(UserController.EditUser));
+                return Ok("User information updated successfully.");
             }
-            ModelState.AddModelErrorList(await result.Messages);
-            return View();
+
+            return BadRequest(await result.Messages);
         }
 
-
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ForgotPassword(UserForgotPasswordDto request)
+        [HttpPost("forgotpassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] UserForgotPasswordDto request)
         {
             var hasUser = await _userManager.FindByEmailAsync(request.Email);
-
             if (hasUser == null)
             {
-                ModelState.AddModelError(String.Empty, "Bu email adresine sahip kullanıcı bulunamamıştır.");
-                return View();
+                return NotFound("User with the provided email does not exist.");
             }
+
             var result = await _userService.SendPasswordResetLinkAsync(request);
             if (await result.Success)
             {
-                TempData["SuccessMessage"] = "Şifre sıfırlama linki email adresinize gönderilmiştir.";
-                return RedirectToAction(nameof(UserController.ForgotPassword));
+                return Ok("Password reset link sent successfully.");
             }
-            ModelState.AddModelErrorList(await result.Messages);
-            return View();
 
+            return BadRequest(await result.Messages);
         }
 
-        public IActionResult ResetPassword(string userId, string token)
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] UserResetPasswordDto request, [FromQuery] Guid userId, [FromQuery] string token)
         {
-            TempData["userId"] = userId;
-            TempData["token"] = token;
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ResetPassword(UserResetPasswordDto request)
-        {
-            var userId = Guid.Parse(TempData["userId"].ToString());
-            var token = TempData["token"].ToString();
-
-
             var result = await _userService.ResetUserPasswordAsync(request, userId, token);
-            
-
             if (await result.Success)
             {
-                TempData["SuccessMessage"] = "Şifreniz başarıyla değiştirilmiştir.";
-            }
-            else
-            {
-                ModelState.AddModelErrorList(await result.Messages);
+                return Ok("Password reset successfully.");
             }
 
-            return View();
+            return BadRequest(await result.Messages);
         }
 
-        public IActionResult AccessDenied(string returnUrl)
+        [HttpGet("accessdenied")]
+        public IActionResult AccessDenied()
         {
-            string message = string.Empty;
-
-            message = "Bu sayfaya erişiminiz yoktur! Bir yanlışlık olduğunu düşünüyorsanız destek ekibimizle iletişime geçin.";
-            ViewBag.message = message;
-
-            return View();
+            return Forbid("You do not have access to this resource.");
         }
     }
 }

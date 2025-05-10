@@ -186,6 +186,20 @@ namespace Service.Concretes
            var userList = _mapper.Map<List<ListUserDto>>(users);
             return new AsyncSuccessDataResult<List<ListUserDto>>(Task.FromResult(userList));
         }
+
+        public async Task<IAsyncResult> MatchUsersAsync(Guid userId, Guid matchUserId)
+        {
+            var matchUser1 = await _userManager.FindByIdAsync(userId.ToString());
+            var matchUser2 = await _userManager.FindByIdAsync(matchUserId.ToString());
+            if (matchUser1 == null || matchUser2 == null)
+            {
+                return new AsyncErrorResult(Task.FromResult("At least one of the users does not exist!"));
+            }
+            matchUser1.MatchedUserId = matchUserId;
+            matchUser2.MatchedUserId = userId;
+            return new AsyncSuccessResult(Task.FromResult("You have been matched successfully"));
+
+        }
     }
 }
 

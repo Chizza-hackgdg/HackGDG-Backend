@@ -16,7 +16,7 @@ namespace Service.Concretes
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.UseDefaultCredentials = false;
             smtpClient.Port = 587;
-            smtpClient.Credentials = new NetworkCredential("muhammedugr16@gmail.com", "kmauhgziflqtcvnv");
+            smtpClient.Credentials = new NetworkCredential("muhammedugr16@gmail.com", "mpde kdcf tsju kzsg");
             smtpClient.EnableSsl = true;
             
 
