@@ -11,6 +11,7 @@ namespace Entity
     public class Milestone:IEntity<Guid>
     {
         public Guid UserId { get; set; }
+        public Guid ForumPostId { get; set; }
 
         [Display(Name = "Milestone Name: ")]
         [StringLength(100, ErrorMessage = "Milestone name can not be longer than 100 characters!")]

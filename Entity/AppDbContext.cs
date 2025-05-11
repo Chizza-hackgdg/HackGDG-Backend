@@ -14,6 +14,9 @@ namespace Entity
         public DbSet<ForumCategory> ForumCategories { get; set; }
         public DbSet<ForumPost> ForumPosts { get; set; }
         public DbSet<ForumComment> ForumComments { get; set; }
+        public DbSet<ForumPostMatchSubmitUser> ForumPostMatchSubmitUsers { get; set; }
+        public DbSet<UserProfession> UserProfessions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

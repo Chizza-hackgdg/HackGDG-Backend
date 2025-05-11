@@ -11,7 +11,6 @@ namespace Core.Enum
         Question = 1,
         Discussion,
         MilestoneApproval,
-        KickstarterApproval,
-        LookingForMatch
+        Profession
     }
 }

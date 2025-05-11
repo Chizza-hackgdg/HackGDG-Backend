@@ -19,7 +19,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public string Name { get; set; }
     [StringLength(250)]
     public string Surname { get; set; }
-    public Gender Gender { get; set; }
+    public string Gender { get; set; }
     public DateTime BirthDate { get; set; }
     public int ExpPoint { get; set; }
     public int Level { get; set; }

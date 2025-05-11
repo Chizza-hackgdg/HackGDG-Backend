@@ -30,6 +30,6 @@ namespace Dto.ApplicationUsers
         public DateTime BirthDate { get; set; }
 
         [Display(Name = "Cinsiyet :")]
-        public Gender Gender { get; set; }
+        public string Gender { get; set; }
     }
 }

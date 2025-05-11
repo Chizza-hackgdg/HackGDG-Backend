@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Entity.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class v07 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,9 +30,12 @@ namespace Entity.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MatchedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    MatchedForumPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    MatchedForumPostTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Gender = table.Column<byte>(type: "tinyint", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpPoint = table.Column<int>(type: "int", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
@@ -108,14 +111,35 @@ namespace Entity.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ForumPostMatchSubmitUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ForumPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForumPostMatchSubmitUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ForumPosts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MatchedUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ForumCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VideoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PostType = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(350)", maxLength: 350, nullable: false),
                     AIResponse = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -137,6 +161,7 @@ namespace Entity.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ForumPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MilestoneName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     GoalDescription = table.Column<string>(type: "nvarchar(350)", maxLength: 350, nullable: false),
                     CompletionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -151,6 +176,30 @@ namespace Entity.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Milestones", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfessions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ForumPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProfessionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfessionDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    MilestonesAchieved = table.Column<int>(type: "int", nullable: false),
+                    SkillLevel = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfessions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,10 +378,16 @@ namespace Entity.Migrations
                 name: "ForumComments");
 
             migrationBuilder.DropTable(
+                name: "ForumPostMatchSubmitUsers");
+
+            migrationBuilder.DropTable(
                 name: "ForumPosts");
 
             migrationBuilder.DropTable(
                 name: "Milestones");
+
+            migrationBuilder.DropTable(
+                name: "UserProfessions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -9,6 +9,8 @@ namespace Dto.Milestones
     public class CreateMilestoneDto
     {
         public Guid UserId { get; set; }
+        public Guid ForumPostId { get; set; }
+
         public string MilestoneName { get; set; }
         public string GoalDescription { get; set; }
         public DateTime? CompletionDate { get; set; }

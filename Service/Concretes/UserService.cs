@@ -66,13 +66,6 @@ namespace Service.Concretes
             var identityResult = await _userManager.CreateAsync(userMap, userDto.Password);
             if (identityResult.Succeeded)
             {
-                var user = await _userManager.FindByEmailAsync(userDto.Email);
-
-
-                await _userManager.AddToRoleAsync(user, "member");
-
-                var claim = new Claim(ClaimTypes.Role, "member");
-                await _userManager.AddClaimAsync(user, claim);
                 return new AsyncSuccessResult();
             }
 

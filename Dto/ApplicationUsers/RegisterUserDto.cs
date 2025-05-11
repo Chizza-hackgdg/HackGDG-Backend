@@ -15,7 +15,7 @@ namespace Dto.ApplicationUsers
             
         }
 
-        public RegisterUserDto(string name, string surname, string userName, string email, string phoneNumber, string password, Gender gender, DateTime birthDate)
+        public RegisterUserDto(string name, string surname, string userName, string email, string phoneNumber, string password, string gender, DateTime birthDate)
         {
             Name = name;
             Surname = surname;
@@ -53,7 +53,7 @@ namespace Dto.ApplicationUsers
         public string PasswordConfirm { get; set; }
         [Required(ErrorMessage = "Cinsiyet alanı boş bırakılamaz!")]   
         [Display(Name="*Cinsiyet: ")]
-        public Gender Gender { get; set; }
+        public string Gender { get; set; }
         [Required(ErrorMessage = "Doğum tarihi alanı boş bırakılamaz!")]
         [Display(Name = "*Doğum Tarihi: ")]
         [DataType(DataType.DateTime)]

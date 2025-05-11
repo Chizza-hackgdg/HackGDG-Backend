@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dto.Milestones
+namespace Dto.UserProfessions
 {
-    public class MilestoneDto
+    public class UserProfessionDto
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public Guid ForumPostId { get; set; }
 
-        public string MilestoneName { get; set; }
-        public string GoalDescription { get; set; }
-        public DateTime? CompletionDate { get; set; }
-        public bool IsCompleted { get; set; } = false;
+        public Guid ProfessionForumId { get; set; }
+        public string ProfessionName { get; set; }
+        public string ProfessionDescription { get; set; }
+        public int MilestonesAchieved { get; set; }
+
+        public int SkillLevel { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public DateTime? DeletedDate { get; set; }

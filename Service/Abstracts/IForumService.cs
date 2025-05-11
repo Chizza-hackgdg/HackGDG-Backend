@@ -11,7 +11,7 @@ using IAsyncResult = Core.Utilities.Results.IAsyncResult;
 
 namespace Service.Abstracts
 {
-    public interface IForumService:IDbOperationEvent<ForumPost,Guid>,IDbOperationEvent<ForumComment,Guid>
+    public interface IForumService:IDbOperationEvent<ForumPost,Guid>,IDbOperationEvent<ForumComment,Guid>,IDbOperationEvent<ForumPostMatchSubmitUser,Guid>, IDbOperationEvent<UserProfession,Guid>
     {
         Task<IAsyncDataResult<List<GetForumPostDto>>> GetAllPostsAsync();
         Task<IAsyncDataResult<GetForumPostDto>> GetPostByIdAsync(Guid postId);
@@ -23,9 +23,10 @@ namespace Service.Abstracts
         Task<IAsyncDataResult<GetForumCommentDto>> GetCommentByIdAsync(Guid commentId);
         Task<IAsyncDataResult<List<GetForumCommentDto>>> GetCommentsByPostIdAsync(Guid postId);
         Task<IAsyncDataResult<List<GetForumCommentDto>>> GetChildCommentsByMainId(Guid commentId);
-        Task<IAsyncDataResult<List<GetForumCommentDto>>> GetChildCommentsByPostId(Guid postId);
         Task<IAsyncResult> CreateCommentAsync(CreateForumCommentDto commentDto);
         Task<IAsyncResult> UpdateCommentAsync(UpdateForumCommentDto commentDto);
         Task<IAsyncResult> SoftDeleteCommentAsync(Guid commentId);
+        Task<IAsyncResult> SubmitForForumPostMatchAsync(SubmitForumMatchDto submitDto);
+        Task<IAsyncResult> MatchAllUsersForAllForumPostsAsync();
     }
 }

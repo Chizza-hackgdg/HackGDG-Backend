@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Dto.ForumPosts
         public Guid ForumCategoryId { get; set; }
         public string? VideoUrl { get; set; }
         public string? ImageUrl { get; set; }
+        public Enum_ForumPostType PostType { get; set; }
+
         public string Title { get; set; }
         public string Description { get; set; }
         public string? AIResponse { get; set; }

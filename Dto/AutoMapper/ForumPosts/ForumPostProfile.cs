@@ -17,6 +17,7 @@ namespace Dto.AutoMapper.ForumPosts
             CreateMap<CreateForumPostDto, ForumPost>().ReverseMap();
             CreateMap<UpdateForumPostDto, ForumPost>().ReverseMap();
             CreateMap<GetForumPostDto, ForumPost>().ReverseMap();
+            CreateMap<SubmitForumMatchDto, ForumPostMatchSubmitUser>().ReverseMap();
         }
     }
 }

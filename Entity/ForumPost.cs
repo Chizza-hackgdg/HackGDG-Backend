@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Enum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,6 +20,7 @@ namespace Entity
         public string? VideoUrl { get; set; }
         public string? ImageUrl { get; set; }
 
+        public Enum_ForumPostType PostType{ get; set; }
 
         [Display(Name = "Title: ")]
         [StringLength(100, ErrorMessage = "Title can not be longer than 100 characters!")]

@@ -27,7 +27,7 @@ namespace Service.Concretes
             var forumCategory = _mapper.Map<ForumCategory>(categoryDto);
             forumCategory.CreatedDate = DateTime.UtcNow;
             var result = await ForumCategoryCurrent.AddAsync(forumCategory);
-            return new AsyncSuccessResult();
+            return new AsyncSuccessResult(Task.FromResult("Forum category created succesfully"));
         }
 
         public async Task<IAsyncDataResult<List<GetForumCategoryDto>>> GetAllCategoriesAsync()
